@@ -11,13 +11,12 @@ class Regressor():
     def fit(self, X, y):
         self.reg.fit(X, y)
         self.reg2.fit(X, y)
-        
-        X_combined = np.hstack([reg1.predict(X), reg2.predict(X)])
+        X_combined = np.vstack([self.reg.predict(X), self.reg2.predict(X)]).T
         self.metareg.fit(X_combined, y)
-
 
 
     def predict(self, X):
         pred1 = self.reg.predict(X)
         pred2 = self.reg2.predict(X)
-        return self.meta.predict(X)
+        X_combined = np.vstack([pred1, pred2]).T
+        return self.metareg.predict(X_combined)
