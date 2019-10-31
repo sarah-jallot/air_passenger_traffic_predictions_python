@@ -1,0 +1,52 @@
+---
+title: "R Notebook"
+author: "Sarah Jallot and Victoire de Termont"
+date: "31/10/2019"
+output:
+  html_document:
+    df_print: paged
+---
+Problem 1 : Estimating parameters of a Poisson distribution to model the number of goals scored in football.
+1. 
+It is a discrete distribution as its support is N*. 
+Examples of experiences appropriately modelled by a Poisson distribution are : 
+i) The number of ice-creams sold on a beach during a hot summer day. 
+ii) The number of power failures occurring in Oslo in the winter over a period of 100 years. 
+iii) The number of Macs Victoire de Termont has to buy before she gets a functioning one. 
+
+2. 
+i) Computing the mean of the Poisson distribution: 
+$E(X) = \sum_{k=0}^{\infty} k*\frac{{e^{ - \lambda } \lambda ^k }}{{k!}}$    
+$E(X) = \lambda*\sum_{k=1}^{\infty} \frac{{e^{ - \lambda } \lambda ^{k-1} }}{{(k-1)!}}$ #we simplify by k as in 0 the sum term is null, and then factorise by lambda  
+$E(X) = \lambda*\sum_{k=0}^{\infty} \frac{{e^{ - \lambda } \lambda ^{k} }}{{(k)!}}$ #we now change the indice to make the terms of the Poisson law appear  
+$E(X) = \lambda*1$  # their sum is by definition equal to one  
+$E(X) = \lambda$   
+
+ii) Computing the variance if the Poisson distribution: 
+We have : 
+$Var(X) = E(X^2)-E(X)^2$  
+Let's compute $E(X^2)$ : 
+$E(X^2) = \sum_{k=0}^{\infty} k^2*\frac{{e^{ - \lambda } \lambda ^k }}{{k!}}$    
+$E(X^2) = \sum_{k=0}^{\infty} {k(k-1+1)}*\frac{{e^{ - \lambda } \lambda ^k }}{{k!}}$    
+$E(X^2) = \sum_{k=0}^{\infty} {k(k-1)}*\frac{{e^{ - \lambda } \lambda ^k }}{{k!}} + \sum_{k=0}^{\infty} k*\frac{{e^{ - \lambda } \lambda ^k }}{{k!}}$   
+$E(X^2) = \lambda^2*\sum_{k=2}^{\infty} \frac{{e^{ - \lambda } \lambda ^{k-2} }}{{k-2!}} + E(X)$ # in the same way as for the expectation, we simplify by $k*{(k-1)}$ and then change the indices to make the Poisson sum of probability terms appear. We then note that this sum is equal to one.  
+$E(X^2) = \lambda^2*1 + \lambda$  
+
+Finally, we get : 
+$Var(X) = E(X^2)-E(X)^2 = \lambda^2 + \lambda - \lambda^2 = \lambda$
+
+3. 
+4. 
+The likelihood of a Poisson distribution for a given x in $R^n$ is:   
+$l(x_1,x_2...x_n) = \prod_{i=1}^{n}\frac{{e^{ - \lambda } \lambda ^x_i }}{{x_i!}}$  
+Thus the log-likelihood is:  
+$L(x_1,x_2...x_n) = \sum_{i=1}^{n}\log(\frac{{e^{ - \lambda } \lambda ^x_i }}{{x_i!}})$ 
+$L(x_1,x_2...x_n) = -n * \lambda + \log{\lambda}*\sum_{i=1}^{n} x_i-\sum_{i=1}^{n}\sum_{k=1}^{x_i} k$  
+The derivative is therefore:  
+${d\lambda}L(x_1,x_2...x_n) = -n + \frac{1}{\lambda}*\sum_{i=1}^{n} x_i$  
+So, the likelihood is maximised for $\lambda = \frac{1}{n}*\sum_{i=1}^{n}x_i$ as that is when the derivative of the log-likelihood is null.   
+Thus the mean and the MLE are the same for the Poisson distribution. 
+```{r}
+
+```
+
