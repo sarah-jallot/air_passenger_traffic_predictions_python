@@ -3,6 +3,7 @@ title: "R Notebook"
 author: "Sarah Jallot and Victoire de Termont"
 date: "31/10/2019"
 output:
+  pdf_document: default
   html_document:
     df_print: paged
 ---
@@ -36,6 +37,12 @@ Finally, we get :
 $Var(X) = E(X^2)-E(X)^2 = \lambda^2 + \lambda - \lambda^2 = \lambda$
 
 3. 
+Our observations correspond to the number of goals scored during n independent football games. And we know that they follow a Poisson law of parameter θ. 
+
+The statistical model is M = { for k in N*, Pθ(X=k), θ>0}
+
+We are trying to estimate this parameter θ. As the observations follow a Poisson law od parameter θ, we are trying to estimate the true average number of goals score during a football game. 
+
 4. 
 The likelihood of a Poisson distribution for a given x in $R^n$ is:   
 $l(x_1,x_2...x_n) = \prod_{i=1}^{n}\frac{{e^{ - \lambda } \lambda ^x_i }}{{x_i!}}$  
@@ -46,7 +53,11 @@ The derivative is therefore:
 ${d\lambda}L(x_1,x_2...x_n) = -n + \frac{1}{\lambda}*\sum_{i=1}^{n} x_i$  
 So, the likelihood is maximised for $\lambda = \frac{1}{n}*\sum_{i=1}^{n}x_i$ as that is when the derivative of the log-likelihood is null.   
 Thus the mean and the MLE are the same for the Poisson distribution. 
+
+5. 
 ```{r}
 
 ```
+
+
 
