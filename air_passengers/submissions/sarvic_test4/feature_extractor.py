@@ -21,15 +21,23 @@ class FeatureExtractor(object):
         
         # Merging them with X_encoded 
         X_encoded = X_df
-        X_encoded.loc[:,'DateOfDeparture'] = pd.to_datetime(X_encoded.loc[:,'DateOfDeparture'])
+        X_encoded['DateOfDeparture'] = pd.to_datetime(X_encoded['DateOfDeparture'])
         X_encoded = pd.merge(X_encoded, external_dataDeparture, how='left',left_on=['DateOfDeparture', 'Departure'],
                              right_on=['DateOfDeparture', 'Departure'],sort=False)
         X_encoded = pd.merge(X_encoded, external_dataArrival, how='left',left_on=['DateOfDeparture', 'Arrival'],
                              right_on=['DateOfDeparture', 'Arrival'],sort=False) 
         
+        # Feature engineering
+        # Creating columns to distinguish between the two main airports for flights and the rest
+        X_encoded['d_ManyFlights'] = 0  
+        X_encoded['a_ManyFlights'] = 0
+        X_encoded['d_ManyFlights'][X_df['Departure'] == 'ORD'] = 1
+        X_encoded['d_ManyFlights'][X_df['Departure'] == 'ATL'] = 1
+        X_encoded['a_ManyFlights'][X_df['Arrival'] == 'ORD'] = 
+        X_encoded['a_ManyFlights'][X_df['Arrival'] == 'ATL'] = 1
         
         # Categorical encoding of departure and arrival airports
-        X_encoded = X_encoded.join(pd.get_dummies(X_encoded['Departure'], prefix='d'))
+        X_encoded = X_encoded.join(pd.get_dummies(X_encoded['Departure'], prefix='d')
         X_encoded = X_encoded.join(pd.get_dummies(X_encoded['Arrival'], prefix='a'))
                                    
         # Categorical encoding of the dates 

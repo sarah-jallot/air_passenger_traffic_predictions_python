@@ -1,8 +1,6 @@
 # Combined regressor 
-import numpy as np
 from sklearn.base import BaseEstimator
 from sklearn.linear_model import Ridge 
-from sklearn.linear_model import LinearRegression
 from sklearn.linear_model import Lasso
 from sklearn.linear_model import LassoLars
 from sklearn.linear_model import BayesianRidge
