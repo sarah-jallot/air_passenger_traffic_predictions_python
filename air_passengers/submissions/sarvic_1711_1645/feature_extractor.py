@@ -38,14 +38,13 @@ class FeatureExtractor(object):
         # Data at arrival
         X_encoded = pd.merge(X_encoded, data_arrival, how='left', left_on=['Arrival', 'DateOfDeparture'], right_on=['Arrival', 'DateOfDeparture'])
        
-        #Drop non numerical variables keeping all information 
+        # Drop non numerical variables keeping all information 
         X_encoded = X_encoded.join(pd.get_dummies(X_encoded['Departure'], prefix='d'))
         X_encoded = X_encoded.join(pd.get_dummies(X_encoded['Arrival'], prefix='a'))
         X_encoded = X_encoded.drop('Departure', axis=1)
         X_encoded = X_encoded.drop('Arrival', axis=1)
         
-
-         #Data engineering due to results in the introduction part         
+        # Data engineering due to results in the introduction part         
         X_encoded['DateOfDeparture'] = pd.to_datetime(X_encoded['DateOfDeparture'])
         X_encoded['year'] = X_encoded['DateOfDeparture'].dt.year
         X_encoded['month'] = X_encoded['DateOfDeparture'].dt.month
@@ -60,10 +59,10 @@ class FeatureExtractor(object):
         X_encoded = X_encoded.join(pd.get_dummies(X_encoded['weekday'], prefix='wd'))
         X_encoded = X_encoded.join(pd.get_dummies(X_encoded['week'], prefix='w'))
         
-        #Now we can finally drop DateOfDeparture that is not numerical 
+        # Now we can finally drop DateOfDeparture that is not numerical 
         X_encoded = X_encoded.drop('DateOfDeparture', axis=1)
         
-        #Scaling our data as it might be useful for some regression methods 
+        # Scaling our data as it might be useful for some regression methods 
         X_array = X_encoded.values
         X_array = preprocessing.scale(X_array, axis = 0)   
         return X_array
