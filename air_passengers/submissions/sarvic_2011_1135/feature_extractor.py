@@ -113,7 +113,7 @@ class FeatureExtractor(object):
         X_encoded = X_encoded.drop('DateOfDeparture',axis = 1)
 
         # Dropping this because it looks like it doesn't help
-        #X_encoded = X_encoded.drop(columns = {"a_InterestFlightPrices", "d_InterestFlightPrices"})
+        X_encoded = X_encoded.drop(columns = {"a_interestFlightPrices", "d_interestFlightPrices"})
         
         ### Scaling our data
         scaler = StandardScaler()
