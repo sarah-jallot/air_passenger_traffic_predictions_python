@@ -48,12 +48,12 @@ class FeatureExtractor(object):
         
         ### Feature engineering
         ## Creating columns to distinguish between the two main airports for flights and the rest
-        X_encoded['d_ManyFlights'] = 0  
-        X_encoded['a_ManyFlights'] = 0
-        X_encoded.loc[X_encoded.loc[:,'Departure'] == 'ORD', "d_ManyFlights"] = 1
-        X_encoded.loc[X_encoded.loc[:,'Arrival'] == 'ORD', "a_ManyFlights"] = 1
-        X_encoded.loc[X_encoded.loc[:,'Departure'] == 'ATL', "d_ManyFlights"] = 1
-        X_encoded.loc[X_encoded.loc[:,'Arrival'] == 'ATL', "a_ManyFlights"] = 1
+        #X_encoded['d_ManyFlights'] = 0  
+        #X_encoded['a_ManyFlights'] = 0
+        #X_encoded.loc[X_encoded.loc[:,'Departure'] == 'ORD', "d_ManyFlights"] = 1
+        #X_encoded.loc[X_encoded.loc[:,'Arrival'] == 'ORD', "a_ManyFlights"] = 1
+        #X_encoded.loc[X_encoded.loc[:,'Departure'] == 'ATL', "d_ManyFlights"] = 1
+        #X_encoded.loc[X_encoded.loc[:,'Arrival'] == 'ATL', "a_ManyFlights"] = 1
         
         ## Creating heuristics based on States and airports
         airports_to_states = {
@@ -118,17 +118,69 @@ class FeatureExtractor(object):
         "Texas" : "1",
         "Washington" : "-0.5"}
 
+        # Correcting state approximations with busiest airports, by looking at my extreme errors
+        d_busy_airport = {
+        'ATL':"0",
+        'ORD':"0",
+        'LAX':"0",
+        'DFW':"1",
+        'DEN':"1",
+        'JFK':"0",
+        'SFO':"0",
+        'CLT':"0",
+        'LAS':"0",
+        'PHX':"0",
+        'IAH':"0",
+        'MIA':"0",
+        'MCO':"1",
+        'EWR':"1",
+        'SEA':"0",
+        'MSP':"0",
+        'DTW':"0",
+        'PHL':"0.5",
+        'BOS':"1",
+        'LGA': "0"}
+
+
+        a_busy_airport = { 
+        'ATL':"1",
+        'ORD':"0.5",
+        'LAX':"1",
+        'DFW':"1",
+        'DEN':"1",
+        'JFK':"0",
+        'SFO':"0",
+        'CLT':"0",
+        'LAS':"0",
+        'PHX':"0",
+        'IAH':"0",
+        'MIA':"0",
+        'MCO':"0.5",
+        'EWR':"0",
+        'SEA':"0",
+        'MSP':"0",
+        'DTW':"0",
+        'PHL':"0",
+        'BOS':"1",
+        'LGA': "0"}
+
         # Auxiliary columns from dictionaries to help my heuristics
         X_encoded["heuristics_airports"] = 0
         X_encoded["departure_importance"] = X_encoded["d_State"].map(d_TrafficIntensity)
         X_encoded["arrival_importance"] = X_encoded["a_State"].map(a_TrafficIntensity)
+        X_encoded["arrival_airportImportance"] = X_encoded["Arrival"].map(a_busy_airport)
+        X_encoded["departure_airportImportance"] = X_encoded["Departure"].map(d_busy_airport)
 
+        # It seems that when both are big airports, the traffic is less important so I am taking this into account
+        check = X_encoded["arrival_airportImportance"].astype(float) + X_encoded["departure_airportImportance"].astype(float)
+        X_encoded["departure_arrival_big"] =  (check>1.25)*0.25
 
         # Heuristics column
-        X_encoded["heuristics_airports"] = X_encoded["departure_importance"].astype(float)+ X_encoded["arrival_importance"].astype(float)
+        X_encoded["heuristics_airports"] = X_encoded["departure_importance"].astype(float)+ X_encoded["arrival_importance"].astype(float) + X_encoded["arrival_airportImportance"].astype(float) + X_encoded["departure_airportImportance"].astype(float)-X_encoded["departure_arrival_big"]
 
         # Dropping the auxiliary columns
-        X_encoded = X_encoded.drop(columns = {"departure_importance", "arrival_importance" ,"d_State","a_State"})
+        X_encoded = X_encoded.drop(columns = {"departure_importance", "arrival_importance","departure_airportImportance",
+                       "arrival_airportImportance", "departure_arrival_big" ,"d_State","a_State"})
         
         ## Creating the distance variable
         # Creating latitude and longitude difference for the purpose of computing distance. 
@@ -187,5 +239,8 @@ class FeatureExtractor(object):
         X_encoded = X_encoded.drop('Arrival', axis=1)
         X_encoded = X_encoded.drop('DateOfDeparture',axis = 1)
         
+        ### Scaling our data
+        scaler = StandardScaler()
+        scaler.fit(X_encoded)
     
         return X_encoded
