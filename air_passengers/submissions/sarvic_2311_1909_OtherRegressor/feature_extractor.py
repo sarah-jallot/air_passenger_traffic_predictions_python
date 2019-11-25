@@ -55,6 +55,81 @@ class FeatureExtractor(object):
         X_encoded.loc[X_encoded.loc[:,'Departure'] == 'ATL', "d_ManyFlights"] = 1
         X_encoded.loc[X_encoded.loc[:,'Arrival'] == 'ATL', "a_ManyFlights"] = 1
         
+        ## Creating heuristics based on States and airports
+        airports_to_states = {
+        'ATL' : 'Georgia',
+        'ORD':'Illinois',
+        'LAX':'California',
+        'DFW':'Texas',
+        'DEN':'Colorado',
+        'JFK':'New York',
+        'SFO':'California',
+        'CLT':'North Carolina',
+        'LAS':'Nevada',
+        'PHX':'Arizona',
+        'IAH':'Texas',
+        'MIA':'Florida',
+        'MCO':'Florida',
+        'EWR':'New Jersey',
+        'SEA':'Washington',
+        'MSP':'Minnesota',
+        'DTW':'Michigan',
+        'PHL':'Pennsylvania',
+        'BOS':'Massachusetts',
+        'LGA':'New York'}
+        X_encoded["d_State"] = X_encoded["Departure"].map(airports_to_states)
+        X_encoded["a_State"] = X_encoded["Arrival"].map(airports_to_states)
+
+
+        # Initialising weights based on state by looking at the quantiles by departure and arrival State in X_df with output
+        d_TrafficIntensity = {
+        "Arizona" : "-0.5",
+        "California" : "1",
+        "Colorado" : "-0.5",
+        "Florida" : "-0.5",
+        "Georgia" : "1",
+        "Illinois" : "1",
+        "Massachusetts" : "-0.5",
+        "Michigan" : "-0.5",
+        "Minnesota" : "-0.5",
+        "Nevada" : "-0.5",
+        "New Jersey" : "-0.5",
+        "New York" : "1",
+        "North Carolina" : "-0.5",
+        "Pennsylvania" : "-0.5",
+        "Texas" : "-0.5",
+        "Washington" : "-0.5"}
+
+        a_TrafficIntensity = {
+        "Arizona" : "-0.5",
+        "California" : "2",
+        "Colorado" : "-0.5",
+        "Florida" : "-0.5",
+        "Georgia" : "-0.5",
+        "Illinois" : "2",
+        "Massachusetts" : "-0.5",
+        "Michigan" : "-0.5",
+        "Minnesota" : "-0.5",
+        "Nevada" : "-0.5",
+        "New Jersey" : "-0.5",
+        "New York" : "2",
+        "North Carolina" : "-0.5",
+        "Pennsylvania" : "-0.5",
+        "Texas" : "1",
+        "Washington" : "-0.5"}
+
+        # Auxiliary columns from dictionaries to help my heuristics
+        X_encoded["heuristics_airports"] = 0
+        X_encoded["departure_importance"] = X_encoded["d_State"].map(d_TrafficIntensity)
+        X_encoded["arrival_importance"] = X_encoded["a_State"].map(a_TrafficIntensity)
+
+
+        # Heuristics column
+        X_encoded["heuristics_airports"] = X_encoded["departure_importance"].astype(float)+ X_encoded["arrival_importance"].astype(float)
+
+        # Dropping the auxiliary columns
+        X_encoded = X_encoded.drop(columns = {"departure_importance", "arrival_importance" ,"d_State","a_State"})
+        
         ## Creating the distance variable
         # Creating latitude and longitude difference for the purpose of computing distance. 
         radius = 6371
