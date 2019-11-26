@@ -67,7 +67,7 @@ class FeatureExtractor(object):
 
         # Getting the interaction of departure and arrival on the output
         # We inputted the average output by departure/arrival airport in external data
-        #X_encoded["departure_arrival_interaction"] = X_encoded.loc[:,"d_departureAvg_output"]*X_encoded.loc[:,"a_arrivalAvg_output"]
+        X_encoded["departure_arrival_interaction"] = X_encoded.loc[:,"d_avg_output"]*X_encoded.loc[:,"a_avg_output"]
         
         
 
