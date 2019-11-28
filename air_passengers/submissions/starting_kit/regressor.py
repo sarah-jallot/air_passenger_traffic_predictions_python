@@ -8,13 +8,13 @@ from sklearn.svm import SVC
 class Regressor(BaseEstimator):
     def __init__(self):
         self.reg = GradientBoostingRegressor(alpha=0.9, criterion='friedman_mse', init=None,
-                           learning_rate=0.2, loss='ls', max_depth=5,
-                           max_features=None, max_leaf_nodes=None,
+                           learning_rate=0.05, loss='ls', max_depth=4,
+                           max_features='sqrt', max_leaf_nodes=None,
                            min_impurity_decrease=0.0, min_impurity_split=None,
-                           min_samples_leaf=1, min_samples_split=30,
-                           min_weight_fraction_leaf=0.0, n_estimators=300,
+                           min_samples_leaf=15, min_samples_split=10,
+                           min_weight_fraction_leaf=0.0, n_estimators=3000,
                            n_iter_no_change=None, presort='auto',
-                           random_state=None, subsample=1.0, tol=0.0001,
+                           random_state=0, subsample=1.0, tol=0.0001,
                            validation_fraction=0.1, verbose=0, warm_start=False)
 
     def fit(self, X, y):
