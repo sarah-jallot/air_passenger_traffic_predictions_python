@@ -142,9 +142,11 @@ class FeatureExtractor(object):
 
         # Getting the interaction of departure and arrival on the output
         # We inputted the average output by departure/arrival airport in external data
-        X_encoded["departure_arrival_interaction"] = X_encoded.loc[:,"d_departure_avg_output"]*X_encoded.loc[:,"a_arrival_avg_output"]
-        
-        
+        X_encoded["airportTraffic_interaction"] = X_encoded.loc[:,"d_departure_avg_output"]*X_encoded.loc[:,"a_arrival_avg_output"]
+        X_encoded["DistanceToHoliday_interaction"] = X_encoded.loc[:,"d_DistanceToClosestHoliday"]*X_encoded.loc[:,"a_DistanceToClosestHoliday"]
+        X_encoded["GDPPerCapita_interaction"] = X_encoded.loc[:,"d_2017GDPPerCapita"]*X_encoded.loc[:,"a_2017GDPPerCapita"]
+        X_encoded["Region_interaction"] = X_encoded.loc[:,"d_M"]*X_encoded.loc[:,"a_M"] + X_encoded.loc[:,"d_S"]*X_encoded.loc[:,"a_S"] + X_encoded.loc[:,"d_N"]*X_encoded.loc[:,"a_N"] + X_encoded.loc[:,"d_W"]*X_encoded.loc[:,"a_W"]
+        #X_encoded["MaxTemperature_interaction"] = X_encoded.loc[:,"d_Max TemperatureC"]*X_encoded.loc[:,"a_Max TemperatureC"]
 
         # Distance
         X_encoded["Distance"] = compute_distance(X_encoded)
