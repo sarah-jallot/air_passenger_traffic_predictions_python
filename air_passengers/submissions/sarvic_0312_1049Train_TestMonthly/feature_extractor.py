@@ -69,15 +69,14 @@ class FeatureExtractor(object):
 
         # Getting the interaction of departure and arrival on the output
         # We inputted the average output by departure/arrival airport in external data
-        X_encoded["logPAX_interaction"] = X_encoded.loc[:,"d_departure_avglogPAX"]*X_encoded.loc[:,"a_arrival_avglogPAX"]
+        X_encoded["airportTraffic_interaction"] = X_encoded.loc[:,"d_monthly_departure_avglogPAX"]*X_encoded.loc[:,"a_monthly_arrival_avglogPAX"]
         X_encoded["DistanceToHoliday_interaction"] = X_encoded.loc[:,"d_DistanceToClosestHoliday"]*X_encoded.loc[:,"a_DistanceToClosestHoliday"]
-        X_encoded["GDPPerCapita_interaction"] = X_encoded.loc[:,"d_GDPPerCapita_2017"]*X_encoded.loc[:,"a_GDPPerCapita_2017"]
+        X_encoded["GDPPerCapita_interaction"] = X_encoded.loc[:,"d_2017GDPPerCapita"]*X_encoded.loc[:,"a_2017GDPPerCapita"]
         X_encoded["Region_interaction"] = X_encoded.loc[:,"d_M"]*X_encoded.loc[:,"a_M"] \
         + X_encoded.loc[:,"d_S"]*X_encoded.loc[:,"a_S"] + \
         X_encoded.loc[:,"d_N"]*X_encoded.loc[:,"a_N"] +\
-        X_encoded.loc[:,"d_W"]*X_encoded.loc[:,"a_W"]
-        X_encoded["passenger_interaction"] = X_encoded["d_passengers_2015"]*X_encoded["a_passengers_2015"] 
-        X_encoded["MaxTemperature_interaction"] = X_encoded.loc[:,"d_Max TemperatureC"]*X_encoded.loc[:,"a_Max TemperatureC"]
+         X_encoded.loc[:,"d_W"]*X_encoded.loc[:,"a_W"]
+        #X_encoded["MaxTemperature_interaction"] = X_encoded.loc[:,"d_Max TemperatureC"]*X_encoded.loc[:,"a_Max TemperatureC"]
 
 
         # Distance
@@ -107,6 +106,10 @@ class FeatureExtractor(object):
         X_encoded = X_encoded.drop('Departure', axis=1)
         X_encoded = X_encoded.drop('Arrival', axis=1)
         X_encoded = X_encoded.drop('DateOfDeparture',axis = 1)
+
+        # Scaling the data for selected columns
+        #scaler = RobustScaler(with_centering=True, with_scaling=True, quantile_range=(25.0, 75.0), copy=True)
+        #X_encoded[cols_to_norm] = scaler.fit_transform(X_encoded[cols_to_norm])
 
     
         return X_encoded
