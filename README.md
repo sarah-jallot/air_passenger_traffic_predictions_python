@@ -1,2 +1,2 @@
 # Final_project
-Air passenger traffic predictions by Vic and Sarah
+In this project, we predict future air passenger traffic in the US based on past traffic. 
